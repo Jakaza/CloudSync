@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const http_1 = __importDefault(require("http"));
+const path_1 = __importDefault(require("path"));
 const simple_git_1 = __importDefault(require("simple-git"));
 const utils_1 = require("./utils");
 const app = (0, express_1.default)();
@@ -25,7 +26,10 @@ app.get('/testing', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 }));
 app.post('/deploy', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { repo } = req.body;
-    yield (0, simple_git_1.default)().clone(repo, `output/${(0, utils_1.generateUniqueId)()}`);
+    const id = (0, utils_1.generateUniqueId)();
+    yield (0, simple_git_1.default)().clone(repo, path_1.default.join(__dirname, `output/${id}`));
+    const files = (0, utils_1.getAllFiles)(path_1.default.join(__dirname, `output/${id}`));
+    console.log(files);
     res.json(repo);
 }));
 const server = http_1.default.createServer(app);
